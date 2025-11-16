@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo Manejo de Choque</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .passo {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        label {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            width: 90%; 
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+            float: right;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Protocolo de Manejo do Choque</h1>
+    </header>
+
+    <div id="protocolo-container">
+
+        <div id="passo1" class="passo">
+            <h2>1. Critérios de Inclusão (Choque)</h2>
+            <p>Selecione SIM ou NÃO para cada critério. O diagnóstico é dado pela combinação dos parâmetros.</p>
+            
+            <div id="criterios">
+                <label>1. Redução do Status Mental?</label>
+                <input type="checkbox" id="mentalStatus"><br>
+
+                <label>2. Alteração do Tempo de Enchimento Capilar (>= 4s)?</label>
+                <input type="checkbox" id="tec"><br>
+
+                <label>3. Redução do Débito Urinário?</label>
+                <input type="checkbox" id="diurese"><br>
+
+                <label>4. Shock Index (SI) > 0.8?</label>
+                <input type="checkbox" id="si"><br>
+
+                <label>5. Mottling?</label>
+                <input type="checkbox" id="mottling"><br>
+
+                <label>6. Hipotensão?</label>
+                <input type="checkbox" id="hipotensao"><br>
+
+                <label>7. Hiperlactatemia (> 2.0 mmol/L)?</label>
+                <input type="checkbox" id="lactato"><br>
+            </div>
+            
+            <button onclick="avaliarCriterios()">Avaliar Diagnóstico</button>
+        </div>
+
+        <div id="resultado" class="passo" style="display: none;">
+            </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
