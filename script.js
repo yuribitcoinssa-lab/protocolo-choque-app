@@ -1,6 +1,6 @@
 /**
- * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL, COMPLETA E FUNCIONAL)
- * Correção: Critérios para DPP/Oclusão incluídos na rota alternativa (PLR Impossível).
+ * Lógica do Protocolo de Manejo do Choque (VERSÃO CORRIGIDA E FUNCIONAL)
+ * Corrigido: Remoção da opção de PLR no cenário de Fallback DPP/Oclusão.
  */
 
 // =========================================================================
@@ -331,8 +331,6 @@ function avaliarVM(resposta) {
 // =========================================================================
 function avaliarAlternativas() {
     const container = document.getElementById('protocolo-container');
-    container.innerHTML = '';
-
     container.innerHTML = `
         <div id="passo-sem-plr" class="passo">
             <h2>4.1.3. Alternativas de Fluidorresponsividade</h2>
@@ -443,15 +441,13 @@ function aplicarPausa(resposta) {
             </div>
         `;
     } else {
-        // Não atende: Fazer PLR
+        // CORREÇÃO: Não atende critérios E PLR é impossível. Vai direto para Vasopressor.
         container.innerHTML = `
-            <div id="passo4-1-3-2-fallback" class="passo">
-                <h2>4.1.3.2 Fallback (Não atende critérios)</h2>
-                ${criteriosMelhoraHTML}
-                <p>❌ **Ação:** Como não atende aos critérios, realizar **Elevação Passiva das Pernas (PLR)**.</p>
-                <p>O PLR foi **positivo**?</p>
-                <button onclick="logicaPasso4_2('sim')">Sim</button>
-                <button onclick="logicaPasso4_2('nao')">Não</button>
+            <div id="passo4-1-3-2-fallback-final" class="passo">
+                <h2>4.1.3.2 Fallback (Critérios Não Atendidos)</h2>
+                <p>❌ **Ação:** Como os critérios dinâmicos falharam ou são impossíveis, inicie **Terapia Empírica/Monitoramento Avançado**.</p>
+                <p>Inicie **Vasopressor** (Noradrenalina) OU Vasopressor + **Inotrópico** (Dobutamina).</p>
+                <button onclick="reavaliar30Min()">Reavaliar em 30 min (Item 4.3)</button>
             </div>
         `;
     }
