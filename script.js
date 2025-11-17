@@ -79,8 +79,6 @@ function avaliarCriterios() {
     // DIAGNÓSTICO FINAL: Choque é confirmado se QUALQUER UMA das cláusulas for TRUE
     const choqueConfirmado = clausula1 || clausula2 || clausula3 || clausula4;
 
-    // ----------------------------------------------------------------------
-    
     // 3. Exibir o resultado
     const resultadoDiv = document.getElementById('resultado');
     const container = document.getElementById('passo1');
@@ -155,7 +153,7 @@ function logicaPasso2(resposta) {
         `;
     } else {
         // 2.2.2 Não: UTI + Monitorização (Salto para o item 3 e 2.2.2)
-        logicaPasso3_4(true); // Chamada para o passo 3/4, indicando que veio do "Não" (volta para 2.2)
+        logicaPasso3_4('sim'); // Passa 'sim' para indicar que veio de uma falha (target: iniciarDesafioVolumico)
     }
 }
 
@@ -195,7 +193,7 @@ function logicaPasso3_4(veioDeNao) {
     container.innerHTML = '';
 
     // Define o target do botão Voltar: se veio de "Não" em 2.2, volta para 2.2; senão, volta para 2.2.1
-    const targetBack = veioDeNao ? 'iniciarDesafioVolumico()' : 'logicaPasso2_1_1(\'sim\')';
+    const targetBack = veioDeNao ? 'iniciarDesafioVolumico()' : 'logicaPasso2(\'sim\')';
 
     container.innerHTML = `
         <div id="passo3-e-4" class="passo">
@@ -278,7 +276,7 @@ function avaliarGapEsvco2() {
                 <h3>4.1.3 Avaliação de Fluidorresponsividade</h3>
                 <p>O paciente pode fazer Elevação Passiva das Pernas (PLR)?</p>
                 
-                ${backButtonHTML('logicaPasso3_4(false)')}
+                ${backButtonHTML('logicaPasso3_4()')}
                 <button onclick="avaliarPreditores('plr')">Sim</button>
                 <button onclick="avaliarPreditores('sem_plr')">Não</button>
             </div>
@@ -290,7 +288,7 @@ function avaliarGapEsvco2() {
                 <h2>4.1.1 Choque Revertido/Não Persistente</h2>
                 <p>✅ **Resultados:** GapCO2: ${gapCO2.toFixed(1)} mmHg | SvcO2: ${svco2.toFixed(1)}% | Razão (GapCO2 / $\Delta$CaO2-CvO2): ${razaoRespiratoria.toFixed(2)}</p>
                 <p>Os parâmetros de hipoperfusão estão controlados.</p>
-                ${backButtonHTML('logicaPasso3_4(false)')}
+                ${backButtonHTML('logicaPasso3_4()')}
                 <button onclick="logicaPasso5('sim')">Avançar para Causa Base</button>
             </div>
         `;
@@ -483,7 +481,7 @@ function aplicarPausa(resposta) {
             </div>
         `;
     } else {
-        // CORREÇÃO FINAL: Não atende critérios E PLR é impossível. Vai direto para Vasopressor.
+        // Não atende critérios. Vai direto para Vasopressor (Terapia Empírica).
         container.innerHTML = `
             <div id="passo4-1-3-2-fallback-final" class="passo">
                 <h2>4.1.3.2 Fallback (Critérios Não Atendidos)</h2>
@@ -505,10 +503,9 @@ function logicaPasso4_2(resposta) {
     const container = document.getElementById('protocolo-container');
     container.innerHTML = ''; 
     
-    // Definição do botão Voltar (targets corrigidos para voltar à tela de preditores)
+    // Definição do target do botão Voltar
     let backButtonTarget;
-    // Verifica se veio de PLR/DPP em VM/Espontânea
-    if (document.getElementById('passo4-1-3-1')) {
+    if (document.getElementById('passo4-1-3-1')) { 
         backButtonTarget = 'avaliarVM(\'nao\')'; // PLR Espontânea
     } else if (document.getElementById('passo4-1-3-2-PLR')) {
         backButtonTarget = 'avaliarPausaDPP(\'nao\')'; // PLR em VM
@@ -517,7 +514,7 @@ function logicaPasso4_2(resposta) {
     } else if (document.getElementById('passo4-1-3-2-fallback-final')) {
         backButtonTarget = 'aplicarPausa(\'nao\')'; // Falha DPP/Oclusão
     } else {
-        backButtonTarget = 'avaliarGapEsvco2()'; // Fallback mais seguro
+        backButtonTarget = 'avaliarGapEsvco2()'; // Fallback mais seguro (volta para a tela de Sim/Não PLR)
     }
 
     if (resposta === 'sim') {
