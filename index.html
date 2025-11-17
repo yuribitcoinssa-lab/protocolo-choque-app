@@ -2,58 +2,118 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protocolo Manejo de Choque</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Protocolo Manejo de Choque</title>
     
     <style>
+        /* --- ESTILOS GERAIS (Layout do App) --- */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5; /* Fundo cinza suave */
+            color: #333;
+            line-height: 1.5;
         }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        /* --- CAIXA DO PASSO (Cartão Branco) --- */
         .passo {
             background-color: #fff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            border-radius: 12px; /* Bordas arredondadas estilo App */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 600px; /* Largura máxima para não esticar no PC */
+            margin: 0 auto 20px auto;
         }
-        h1, h2 { color: #333; }
-        h3 { color: #555; margin-top: 20px; }
+
+        h2 {
+            color: #0056b3;
+            font-size: 1.3rem;
+            margin-top: 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        /* --- INPUTS E LABELS (Formulário) --- */
         label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: bold;
-            width: 100%; 
-            max-width: 600px;
+            align-items: center;
+            padding: 12px 0;
             border-bottom: 1px solid #eee;
-            padding: 5px 0;
+            font-weight: 500;
+            cursor: pointer;
         }
+
+        /* Aumentar a área de clique do checkbox para facilitar no celular */
         input[type="checkbox"] {
-            margin-right: 5px;
             transform: scale(1.5);
+            margin-right: 10px;
         }
+
+        /* Estilo para os inputs numéricos (PVC, Lactato, etc) */
         input[type="number"] {
-            padding: 5px;
-            border-radius: 4px;
+            padding: 8px;
             border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 80px;
+            text-align: center;
         }
+
+        /* --- BOTÕES --- */
         button {
-            padding: 10px 15px;
-            background-color: #007bff;
+            display: inline-block;
+            width: 100%; /* Botões largura total no celular */
+            padding: 15px;
+            background-color: #007bff; /* Azul padrão */
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
-            margin-right: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background 0.2s;
         }
-        button:hover { background-color: #0056b3; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f9f9f9; }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.98); /* Efeito de clique */
+        }
+
+        /* Ajuste para telas maiores (PC) */
+        @media (min-width: 600px) {
+            button {
+                width: auto; /* Botões tamanho normal no PC */
+                margin-right: 10px;
+            }
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -66,14 +126,14 @@
 
         <div id="passo1" class="passo">
             <h2>1. Critérios de Inclusão (Choque)</h2>
-            <p>Selecione SIM ou NÃO para cada critério. O diagnóstico é dado pela combinação dos parâmetros.</p>
+            <p>Selecione <strong>SIM</strong> para cada critério presente. O diagnóstico combina parâmetros clínicos e metabólicos.</p>
             
             <div id="criterios">
                 <label>1. Redução do Status Mental? <input type="checkbox" id="mentalStatus"></label>
-                <label>2. Alteração do Tempo de Enchimento Capilar (>= 4s)? <input type="checkbox" id="tec"></label>
+                <label>2. Tempo de Enchimento Capilar >= 4s? <input type="checkbox" id="tec"></label>
                 <label>3. Redução do Débito Urinário? <input type="checkbox" id="diurese"></label>
                 <label>4. Shock Index (SI) > 0.8? <input type="checkbox" id="si"></label>
-                <label>5. Mottling? <input type="checkbox" id="mottling"></label>
+                <label>5. Mottling (Pele mosqueada)? <input type="checkbox" id="mottling"></label>
                 <label>6. Hipotensão? <input type="checkbox" id="hipotensao"></label>
                 <label>7. Hiperlactatemia (> 2.0 mmol/L)? <input type="checkbox" id="lactato"></label>
             </div>
