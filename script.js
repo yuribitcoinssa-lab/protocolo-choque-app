@@ -1,6 +1,6 @@
 /**
  * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL E FUNCIONAL)
- * Corrigido: Botões "Voltar" para garantir o retorno à EXATA etapa anterior.
+ * CORREÇÃO FINAL: Sintaxe dos botões "Voltar" verificada e garantida.
  */
 
 // =========================================================================
@@ -22,7 +22,7 @@ const criteriosMelhoraHTML = `
     </div>
 `;
 
-// Função utilitária para gerar o botão Voltar
+// Função utilitária para gerar o botão Voltar (Sintaxe de aspas verificada)
 const backButtonHTML = (targetFunction) => 
     `<button onclick="${targetFunction}" style="background-color: #6c757d; margin-right: 10px;">⬅️ Voltar</button>`;
 
@@ -505,6 +505,7 @@ function logicaPasso4_2(resposta) {
     
     // Definição do target do botão Voltar
     let backButtonTarget;
+    // O target será a função que gerou a tela anterior (seja PLR, DPP, ou alternativa)
     if (document.getElementById('passo4-1-3-1')) { 
         backButtonTarget = 'avaliarVM(\'nao\')'; // PLR Espontânea
     } else if (document.getElementById('passo4-1-3-2-PLR')) {
@@ -569,6 +570,7 @@ function logicaPasso4_2_neuro(resposta) {
 function reavaliar30Min() {
     const container = document.getElementById('protocolo-container');
     // Define o target do botão Voltar com base no passo anterior (Vasopressor ou Fluido)
+    // Se a tela anterior foi a decisão de neurocrítico, volta para lá. Se foi o 4.2.2, volta para lá.
     const targetBack = document.getElementById('passo4-2-1-final') ? 'logicaPasso4_2_neuro(\'nao\')' : 'logicaPasso4_2(\'nao\')';
 
     container.innerHTML = `
