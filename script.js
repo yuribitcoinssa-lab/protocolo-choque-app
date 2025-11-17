@@ -1,7 +1,16 @@
 /**
- * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL COM METAS CLÍNICAS)
- * Adicionado: Tela de Metas Hemodinâmicas e Botões "Voltar" corrigidos.
+ * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL COM LAYOUT LIMPO E FOOTER)
  */
+
+// =========================================================================
+// RODAPÉ DA CITAÇÃO (FORMATO ÚNICO)
+// =========================================================================
+const footerCitationHTML = `
+    <div style="text-align: center; font-size: 0.75em; color: #666; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 10px;">
+        <p>Referência: Monnet X et al. ESICM guidelines on circulatory shock and hemodynamic monitoring 2025. Intensive Care Med. 2025.</p>
+    </div>
+`;
+
 
 // =========================================================================
 // CRITÉRIOS DE MELHORA (PARA REVISITAÇÃO CONSTANTE)
@@ -39,7 +48,7 @@ function voltarParaPasso1() {
 }
 
 // =========================================================================
-// FUNÇÃO PARA A NOVA TELA DE METAS CLÍNICAS
+// FUNÇÃO PARA A NOVA TELA DE METAS CLÍNICAS (LAYOUT LIMPO)
 // =========================================================================
 
 function exibirMetasHemodinamicas() {
@@ -47,14 +56,14 @@ function exibirMetasHemodinamicas() {
     container.innerHTML = `
         <div id="metas-finais" class="passo">
             <h2>🎯 Metas Hemodinâmicas e Monitorização</h2>
-            [cite_start]<p>Guia para a manutenção do suporte hemodinâmico e objetivos de reversão do choque, baseado no Guideline ICM 2025[cite: 1, 4].</p>
+            <p>Guia para a manutenção do suporte hemodinâmico e objetivos de reversão do choque.</p>
             <hr>
 
             <h3>1. Metas de Pressão Arterial Média (PAM)</h3>
             <ul style="padding-left: 20px;">
-                [cite_start]<li>**Choque Séptico:** Meta inicial de **65–70 mmHg**[cite: 663]. [cite_start]Individualizar em pacientes com hipertensão crônica ou PVC alta[cite: 665, 666].</li>
-                [cite_start]<li>**Choque Cardiogênico:** Considerar alvo inicial de **≥ 65 mmHg**[cite: 678].</li>
-                [cite_start]<li>**Choque Hemorrágico (não controlado e sem TBI):** Metas baixas (PAM **50–60 mmHg** ou PAS 80–90 mmHg) até o controle da hemorragia[cite: 676].</li>
+                <li>**Choque Séptico:** Meta inicial de **65–70 mmHg**. Individualizar em pacientes com hipertensão crônica ou PVC alta.</li>
+                <li>**Choque Cardiogênico:** Considerar alvo inicial de **≥ 65 mmHg**.</li>
+                <li>**Choque Hemorrágico (não controlado e sem TBI):** Metas baixas (PAM **50–60 mmHg** ou PAS 80–90 mmHg) até o controle da hemorragia.</li>
             </ul>
 
             <h3>2. Metas e Parâmetros de Perfusão/Metabolismo</h3>
@@ -69,27 +78,27 @@ function exibirMetasHemodinamicas() {
                 <tbody>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ddd;">Lactato</td>
-                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**< 2.0 mmol/L** (LSU)[cite: 137, 183]. [cite_start]A normalização é a consequência do tratamento adequado[cite: 255].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">**< 2.0 mmol/L** (LSU). A normalização é a consequência do tratamento adequado.</td>
                         <td style="padding: 8px; border: 1px solid #ddd;">Metabolismo</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ddd;">Tempo de Enchimento Capilar (TEC)</td>
-                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**< 3 segundos** (Normal)[cite: 170]. [cite_start]Monitorização seriada é essencial[cite: 146].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">**< 3 segundos** (Normal). Monitorização seriada é essencial.</td>
                         <td style="padding: 8px; border: 1px solid #ddd;">Microcirculação</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ddd;">SvcO₂ (Sat. Venosa Central)</td>
-                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**65% a 75%** (Garantir balanço entre oferta/consumo)[cite: 224].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">**65% a 75%** (Garantir balanço entre oferta/consumo).</td>
                         <td style="padding: 8px; border: 1px solid #ddd;">Oxigenação</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ddd;">GapCO₂ ($P_{v-a}CO_{2}$)</td>
-                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**≤ 6.0 mmHg** (Valores > 6.0 sugerem choque persistente/fluxo baixo)[cite: 235].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">**≤ 6.0 mmHg** (Valores > 6.0 sugerem choque persistente/fluxo baixo).</td>
                         <td style="padding: 8px; border: 1px solid #ddd;">Fluxo (CO)</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ddd;">Débito Urinário</td>
-                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**≥ 0.5 mL/kg/h** (Indicador de perfusão renal)[cite: 130].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">**≥ 0.5 mL/kg/h** (Indicador de perfusão renal).</td>
                         <td style="padding: 8px; border: 1px solid #ddd;">Perfusão Orgânica</td>
                     </tr>
                 </tbody>
@@ -97,13 +106,14 @@ function exibirMetasHemodinamicas() {
 
             <h3>3. Pistas Diagnósticas (Tipos de Choque)</h3>
             <ul style="padding-left: 20px;">
-                [cite_start]<li>**Choque Distributivo (Séptico, inicial):** Frequentemente associado a **CO Alto** e Pressão de Pulso Preservada (vasodilatação)[cite: 162, 191].</li>
-                [cite_start]<li>**Choque Cardiogênico/Hipovolêmico:** Geralmente associado a **CO Baixo** e Pressão de Pulso Baixa (vasoconstrição compensatória)[cite: 162, 192].</li>
+                <li>**Choque Distributivo (Séptico, inicial):** Frequentemente associado a **CO Alto** e Pressão de Pulso Preservada (vasodilatação).</li>
+                <li>**Choque Cardiogênico/Hipovolêmico:** Geralmente associado a **CO Baixo** e Pressão de Pulso Baixa (vasoconstrição compensatória).</li>
             </ul>
             
             <hr>
             ${backButtonHTML('window.history.back()')}
             <button onclick="window.location.reload()">Reiniciar Protocolo</button>
+            ${footerCitationHTML}
         </div>
     `;
 }
@@ -167,6 +177,7 @@ function avaliarCriterios() {
             <p><strong>Infunda 30ml/kg em 30-60 min e reavalie os critérios do Item 1.</strong></p>
             ${backButtonHTML('voltarParaPasso1()')}
             <button onclick="iniciarDesafioVolumico()">Avançar para Etapa 2.2 (Reavaliação)</button>
+            ${footerCitationHTML}
         `;
     } else {
         resultadoDiv.innerHTML = `
@@ -176,6 +187,7 @@ function avaliarCriterios() {
             ${backButtonHTML('voltarParaPasso1()')}
             ${metasButtonHTML('exibirMetasHemodinamicas()')}
             <button onclick="window.location.reload()">Reiniciar Protocolo</button>
+            ${footerCitationHTML}
         `;
     }
 }
@@ -198,6 +210,7 @@ function iniciarDesafioVolumico() {
             ${backButtonHTML('voltarParaPasso1()')} 
             <button onclick="logicaPasso2('sim')">Sim</button>
             <button onclick="logicaPasso2('nao')">Não</button>
+            ${footerCitationHTML}
         </div>
     `;
 }
@@ -222,6 +235,7 @@ function logicaPasso2(resposta) {
                 <hr>
                 <p>O paciente **JÁ ESTÁ NA UTI**? (Se sim, pule a reavaliação de internação e vá para o monitoramento)</p>
                 <button onclick="logicaPasso3_4()">Sim</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -243,6 +257,7 @@ function logicaPasso2_1_1(resposta) {
                 <p>🚨 **Ação:** Considere Desafio Volêmico (500 ml em 5 a 10 min) e **Internação em UTI.**</p>
                 ${backButtonHTML('logicaPasso2(\'sim\')')}
                 <button onclick="logicaPasso3_4()">Avançar para Monitorização Avançada</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -254,6 +269,7 @@ function logicaPasso2_1_1(resposta) {
                 ${backButtonHTML('logicaPasso2(\'sim\')')}
                 ${metasButtonHTML('exibirMetasHemodinamicas()')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo (Fim do fluxo agudo)</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -301,6 +317,7 @@ function logicaPasso3_4(veioDeNao) {
 
             ${backButtonHTML(targetBack)}
             <button onclick="avaliarGapEsvco2()">Calcular e Avaliar Hipoperfusão (Item 4.1)</button>
+            ${footerCitationHTML}
         </div>
     `;
 }
@@ -353,6 +370,7 @@ function avaliarGapEsvco2() {
                 ${backButtonHTML('logicaPasso3_4()')}
                 <button onclick="avaliarPreditores('plr')">Sim</button>
                 <button onclick="avaliarPreditores('sem_plr')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -364,6 +382,7 @@ function avaliarGapEsvco2() {
                 <p>Os parâmetros de hipoperfusão estão controlados.</p>
                 ${backButtonHTML('logicaPasso3_4()')}
                 <button onclick="logicaPasso5('sim')">Avançar para Causa Base</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -388,6 +407,7 @@ function avaliarPreditores(tipo) {
                 ${backButtonHTML('avaliarGapEsvco2()')}
                 <button onclick="avaliarVM('sim')">Sim</button>
                 <button onclick="avaliarVM('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else if (tipo === 'sem_plr') {
@@ -413,6 +433,7 @@ function avaliarVM(resposta) {
                 ${backButtonHTML('avaliarPreditores(\'plr\')')}
                 <button onclick="avaliarPausaDPP('sim')">DPP / Oclusão Expiratória</button>
                 <button onclick="avaliarPausaDPP('nao')">Elevação Passiva das Pernas (PLR)</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -426,6 +447,7 @@ function avaliarVM(resposta) {
                 ${backButtonHTML('avaliarPreditores(\'plr\')')}
                 <button onclick="logicaPasso4_2('sim')">Sim</button>
                 <button onclick="logicaPasso4_2('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -447,6 +469,7 @@ function avaliarAlternativas() {
             ${backButtonHTML('avaliarGapEsvco2()')}
             <button onclick="avaliarAlternativaVM('sim')">Sim</button>
             <button onclick="avaliarAlternativaVM('nao')">Não</button>
+            ${footerCitationHTML}
         </div>
     `;
 }
@@ -480,6 +503,7 @@ function avaliarAlternativaVM(resposta) {
                 <hr>
                 <p style="font-size: 0.9em; color: #555;">*Se o paciente não atende aos critérios DPP/Oclusão e PLR é impossível, a conduta clínica deve ser de exceção (discutir monitorização invasiva avançada ou iniciar terapia empírica).*</p>
                 <button onclick="logicaPasso4_2('nao')">Iniciar Vasopressor/Inotrópico (Opção Empírica)</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -491,6 +515,7 @@ function avaliarAlternativaVM(resposta) {
                 <p>Inicie **Vasopressor** (Noradrenalina) OU Vasopressor + **Inotrópico** (Dobutamina).</p>
                 ${backButtonHTML('avaliarAlternativas()')}
                 <button onclick="reavaliar30Min()">Próxima Ação</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -519,6 +544,7 @@ function avaliarPausaDPP(resposta) {
                 ${backButtonHTML(targetBack)}
                 <button onclick="aplicarPausa('sim')">Sim</button>
                 <button onclick="aplicarPausa('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -532,6 +558,7 @@ function avaliarPausaDPP(resposta) {
                 ${backButtonHTML(targetBack)}
                 <button onclick="logicaPasso4_2('sim')">Sim</button>
                 <button onclick="logicaPasso4_2('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -552,6 +579,7 @@ function aplicarPausa(resposta) {
                 ${backButtonHTML('avaliarPausaDPP(\'sim\')')}
                 <button onclick="logicaPasso4_2('sim')">Sim</button>
                 <button onclick="logicaPasso4_2('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -563,6 +591,7 @@ function aplicarPausa(resposta) {
                 <p>Inicie **Vasopressor** (Noradrenalina) OU Vasopressor + **Inotrópico** (Dobutamina).</p>
                 ${backButtonHTML('avaliarPausaDPP(\'sim\')')}
                 <button onclick="reavaliar30Min()">Reavaliar em 30 min (Item 4.3)</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -604,6 +633,7 @@ function logicaPasso4_2(resposta) {
                 ${backButtonHTML(backButtonTarget)}
                 <button onclick="logicaPasso4_2_neuro('sim')">Sim</button>
                 <button onclick="logicaPasso4_2_neuro('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -614,6 +644,7 @@ function logicaPasso4_2(resposta) {
                 <p>❌ **Ação:** Iniciar **Vasopressor** (Noradrenalina) OU Vasopressor + **Inotrópico** (Dobutamina).</p>
                 ${backButtonHTML(backButtonTarget)}
                 <button onclick="reavaliar30Min()">Próxima Ação</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -632,6 +663,7 @@ function logicaPasso4_2_neuro(resposta) {
             <p>✅ **Ação:** Fazer expansão volêmica com **${cristalóide}** (500 ml em 5-10 min).</p>
             ${backButtonHTML('logicaPasso4_2(\'sim\')')}
             <button onclick="reavaliar30Min()">Próxima Ação</button>
+            ${footerCitationHTML}
         </div>
     `;
 }
@@ -643,7 +675,6 @@ function logicaPasso4_2_neuro(resposta) {
 function reavaliar30Min() {
     const container = document.getElementById('protocolo-container');
     // Define o target do botão Voltar com base no passo anterior (Vasopressor ou Fluido)
-    // Se a tela anterior foi a decisão de neurocrítico, volta para lá. Se foi o 4.2.2, volta para lá.
     const targetBack = document.getElementById('passo4-2-1-final') ? 'logicaPasso4_2_neuro(\'nao\')' : 'logicaPasso4_2(\'nao\')';
 
     container.innerHTML = `
@@ -655,6 +686,7 @@ function reavaliar30Min() {
             ${backButtonHTML(targetBack)}
             <button onclick="logicaPasso4_3_1('sim')">Sim</button>
             <button onclick="logicaPasso4_3_1('nao')">Não</button>
+            ${footerCitationHTML}
         </div>
     `;
 }
@@ -675,6 +707,7 @@ function logicaPasso4_3_1(resposta) {
                 ${backButtonHTML('reavaliar30Min()')}
                 <button onclick="logicaPasso4_3_1_2_1('sim')">Sim</button>
                 <button onclick="logicaPasso4_3_1_2_1('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -693,6 +726,7 @@ function logicaPasso4_3_1_2_1(resposta) {
                 <p>⚠️ **Conduta:** Discuta individualmente com o intensivista cada ponto para nova intervenção (Busca de causa, ajustes finos de vasopressor/inotrópico).</p>
                 ${backButtonHTML('logicaPasso4_3_1(\'nao\')')}
                 <button onclick="logicaPasso5('nao')">Avançar para Reavaliação e Causa Base</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -704,6 +738,7 @@ function logicaPasso4_3_1_2_1(resposta) {
                 ${backButtonHTML('logicaPasso4_3_1(\'nao\')')}
                 <button onclick="logicaPasso4_3_1_2_2_1('sim')">Sim</button>
                 <button onclick="logicaPasso4_3_1_2_2_1('nao')">Não</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -726,6 +761,7 @@ function logicaPasso4_3_1_2_2_1(resposta) {
                 <button onclick="ecottConduta('disfuncao')">Disfunção Sistólica de Câmaras</button>
                 <button onclick="ecottConduta('normal_congestionado')">Função Normal + VCI ≥ 2.0 OU Padrão B Pulmonar</button>
                 <button onclick="ecottConduta('normal_hipovolemico')">Função Normal + VCI < 2.0 cm E Padrão A Pulmonar</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -736,6 +772,7 @@ function logicaPasso4_3_1_2_2_1(resposta) {
                 <p>❌ **Ação:** Fazer novo **desafio volêmico** (250 ml de cristaloide) **E** aumentar vasopressor **E/OU** associar **Vasopressina**.</p>
                 ${backButtonHTML('logicaPasso4_3_1_2_1(\'nao\')')}
                 <button onclick="logicaPasso5('nao')">Avançar para Reavaliação e Causa Base</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
@@ -760,6 +797,7 @@ function ecottConduta(conduta) {
             <p>🚨 **Ação:** ${acao}</p>
             ${backButtonHTML('logicaPasso4_3_1_2_2_1(\'sim\')')}
             <button onclick="logicaPasso5('nao')">Avançar para Reavaliação e Causa Base</button>
+            ${footerCitationHTML}
         </div>
     `;
 }
@@ -783,6 +821,7 @@ function logicaPasso5(melhora) {
                 ${backButtonHTML('logicaPasso4_3_1(\'sim\')')}
                 ${metasButtonHTML('exibirMetasHemodinamicas()')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo</button>
+                ${footerCitationHTML}
             </div>
         `;
     } else {
@@ -795,6 +834,7 @@ function logicaPasso5(melhora) {
                 ${backButtonHTML('logicaPasso4_3_1(\'sim\')')}
                 ${metasButtonHTML('exibirMetasHemodinamicas()')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo</button>
+                ${footerCitationHTML}
             </div>
         `;
     }
