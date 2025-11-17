@@ -1,5 +1,6 @@
 /**
- * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL COM BOTÃO VOLTAR)
+ * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL E FUNCIONAL)
+ * Corrigido: Botões "Voltar" para garantir o retorno à EXATA etapa anterior.
  */
 
 // =========================================================================
@@ -27,33 +28,13 @@ const backButtonHTML = (targetFunction) =>
 
 
 // =========================================================================
-// FUNÇÕES DE FLUXO ANTERIOR (VOLTAR)
+// FUNÇÕES DE FLUXO ANTERIOR (VOLTAR) - OTIMIZADAS PARA RE-INJEÇÃO
 // =========================================================================
 
-// Função para voltar à tela inicial (Passo 1)
+// Função para recarregar a tela de diagnóstico inicial (único caso de reload)
 function voltarParaPasso1() {
     window.location.reload(); 
-    // Recarregar a página é o método mais limpo para resetar o formulário inicial
 }
-
-// Função para voltar ao resultado do diagnóstico (para refazer a avaliação 2.2)
-function voltarParaResultadoDiagnostico() {
-    const container = document.getElementById('protocolo-container');
-    container.innerHTML = '';
-    // Recarrega o Passo 1 (o resultado do diagnóstico não é salvo, então reiniciamos)
-    window.location.reload(); 
-}
-
-// Função para voltar ao Passo 2.2 (Reavaliação Pós-Desafio)
-function voltarParaReavaliacao2_2() {
-    iniciarDesafioVolumico(true); // Chamando a função principal do passo 2.2
-}
-
-// Função para voltar ao Passo 2.2.1 (Acompanhamento por 6h)
-function voltarParaAcompanhamento2_2_1() {
-    logicaPasso2('sim', true);
-}
-
 
 // =========================================================================
 // FUNÇÃO PRINCIPAL: AVALIAÇÃO DO CHOQUE (ITEM 1)
@@ -174,7 +155,7 @@ function logicaPasso2(resposta) {
         `;
     } else {
         // 2.2.2 Não: UTI + Monitorização (Salto para o item 3 e 2.2.2)
-        logicaPasso3_4(true); // Adiciona 'true' para indicar que veio de uma falha (Back button customizado)
+        logicaPasso3_4(true); // Chamada para o passo 3/4, indicando que veio do "Não" (volta para 2.2)
     }
 }
 
@@ -208,14 +189,13 @@ function logicaPasso2_1_1(resposta) {
 
 // =========================================================================
 // FUNÇÃO PARA O PASSO 3 E 4 (Monitorização e Cálculos)
-// Adicionada lógica para back button
 // =========================================================================
 function logicaPasso3_4(veioDeNao) {
     const container = document.getElementById('protocolo-container');
     container.innerHTML = '';
 
-    // Define o target do botão Voltar: se veio de uma falha (veioDeNao=true), volta para o 2.2 (Reavaliação).
-    const targetBack = veioDeNao ? 'iniciarDesafioVolumico()' : 'logicaPasso2(\'sim\')';
+    // Define o target do botão Voltar: se veio de "Não" em 2.2, volta para 2.2; senão, volta para 2.2.1
+    const targetBack = veioDeNao ? 'iniciarDesafioVolumico()' : 'logicaPasso2_1_1(\'sim\')';
 
     container.innerHTML = `
         <div id="passo3-e-4" class="passo">
@@ -400,7 +380,7 @@ function avaliarAlternativas() {
 }
 
 // =========================================================================
-// NOVA FUNÇÃO: LÓGICA DE ALTERNATIVA QUANDO PLR É CONTRAINDICADO - CORRIGIDA
+// NOVA FUNÇÃO: LÓGICA DE ALTERNATIVA QUANDO PLR É CONTRAINDICADO
 // =========================================================================
 function avaliarAlternativaVM(resposta) {
     const container = document.getElementById('protocolo-container');
@@ -503,7 +483,7 @@ function aplicarPausa(resposta) {
             </div>
         `;
     } else {
-        // CORREÇÃO: Não atende critérios E PLR é impossível. Vai direto para Vasopressor.
+        // CORREÇÃO FINAL: Não atende critérios E PLR é impossível. Vai direto para Vasopressor.
         container.innerHTML = `
             <div id="passo4-1-3-2-fallback-final" class="passo">
                 <h2>4.1.3.2 Fallback (Critérios Não Atendidos)</h2>
@@ -524,20 +504,20 @@ function aplicarPausa(resposta) {
 function logicaPasso4_2(resposta) {
     const container = document.getElementById('protocolo-container');
     container.innerHTML = ''; 
-    const targetBackSim = 'aplicarPausa(\'sim\')'; // Assume-se que o usuário veio do sucesso de uma manobra
-    const targetBackNao = 'aplicarPausa(\'nao\')'; // Assume-se que o usuário veio da falha de uma manobra
-    const targetBackPLR = 'avaliarVM(\'nao\')'; // Se veio de PLR em espontânea
-
-    // Definição do botão Voltar (simplificada)
+    
+    // Definição do botão Voltar (targets corrigidos para voltar à tela de preditores)
     let backButtonTarget;
-    if (document.getElementById('passo4-1-3-1')) { // Se o passo anterior foi PLR em espontânea
-        backButtonTarget = targetBackPLR;
-    } else if (document.getElementById('passo4-1-3-2-PLR')) { // Se o passo anterior foi PLR em VM
-        backButtonTarget = 'avaliarPausaDPP(\'nao\')';
-    } else if (document.getElementById('passo4-1-3-2-exec')) { // Se veio do sucesso DPP/Oclusão
-        backButtonTarget = 'aplicarPausa(\'sim\')';
+    // Verifica se veio de PLR/DPP em VM/Espontânea
+    if (document.getElementById('passo4-1-3-1')) {
+        backButtonTarget = 'avaliarVM(\'nao\')'; // PLR Espontânea
+    } else if (document.getElementById('passo4-1-3-2-PLR')) {
+        backButtonTarget = 'avaliarPausaDPP(\'nao\')'; // PLR em VM
+    } else if (document.getElementById('passo4-1-3-2-exec')) {
+        backButtonTarget = 'aplicarPausa(\'sim\')'; // Sucesso DPP/Oclusão
+    } else if (document.getElementById('passo4-1-3-2-fallback-final')) {
+        backButtonTarget = 'aplicarPausa(\'nao\')'; // Falha DPP/Oclusão
     } else {
-        backButtonTarget = 'avaliarPreditores(\'plr\')'; // Fallback mais seguro
+        backButtonTarget = 'avaliarGapEsvco2()'; // Fallback mais seguro
     }
 
     if (resposta === 'sim') {
@@ -591,13 +571,16 @@ function logicaPasso4_2_neuro(resposta) {
 
 function reavaliar30Min() {
     const container = document.getElementById('protocolo-container');
+    // Define o target do botão Voltar com base no passo anterior (Vasopressor ou Fluido)
+    const targetBack = document.getElementById('passo4-2-1-final') ? 'logicaPasso4_2_neuro(\'nao\')' : 'logicaPasso4_2(\'nao\')';
+
     container.innerHTML = `
         <div id="passo4-3" class="passo">
             <h2>4.3 Reavaliação em 30 Minutos</h2>
             ${criteriosMelhoraHTML}
             <p>Após a intervenção (expansão volêmica ou vasopressor/inotrópico), reavalie os parâmetros perfusionais/hemodinâmicos.</p>
             <p>Houve melhora?</p>
-            ${backButtonHTML('logicaPasso4_2(\'sim\')')}
+            ${backButtonHTML(targetBack)}
             <button onclick="logicaPasso4_3_1('sim')">Sim</button>
             <button onclick="logicaPasso4_3_1('nao')">Não</button>
         </div>
