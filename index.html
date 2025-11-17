@@ -2,72 +2,96 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Protocolo Manejo de Choque</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Protocolo Choque - HGeS</title>
     
     <style>
         /* --- ESTILOS GERAIS (Layout do App) --- */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5; /* Fundo cinza suave */
+            background-color: #f0f2f5;
             color: #333;
             line-height: 1.5;
         }
 
+        /* --- CABEÇALHO INSTITUCIONAL (HGeS/Exército) --- */
         header {
+            background: linear-gradient(180deg, #224020 0%, #2e4a28 100%); /* Verde Militar Profundo */
+            color: white;
+            padding: 30px 20px;
             text-align: center;
-            margin-bottom: 20px;
+            border-bottom: 4px solid #d4af37; /* Linha Dourada (Infantaria/Oficial) */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            margin-bottom: 25px;
+        }
+
+        .logo-militar {
+            width: 90px; /* Tamanho ajustado para o Brasão do Exército */
+            height: auto;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); /* Sombra para destaque */
+        }
+
+        .instituicao {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: #d4af37; /* Dourado */
+            margin-bottom: 5px;
+            display: block;
         }
 
         h1 {
             font-size: 1.5rem;
-            color: #2c3e50;
+            color: #fff;
             margin: 0;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         /* --- CAIXA DO PASSO (Cartão Branco) --- */
         .passo {
             background-color: #fff;
             padding: 20px;
-            border-radius: 12px; /* Bordas arredondadas estilo App */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 600px; /* Largura máxima para não esticar no PC */
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            max-width: 600px;
             margin: 0 auto 20px auto;
+            width: 90%;
         }
 
         h2 {
-            color: #0056b3;
+            color: #2e4a28; /* Verde do Exército nos títulos */
             font-size: 1.3rem;
             margin-top: 0;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid #eee;
             padding-bottom: 10px;
         }
 
         h3 {
             font-size: 1.1rem;
-            color: #555;
+            color: #444;
             margin-top: 20px;
         }
 
-        /* --- INPUTS E LABELS (Formulário) --- */
+        /* --- INPUTS E LABELS --- */
         label {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f0f0f0;
             font-weight: 500;
             cursor: pointer;
         }
 
-        /* Aumentar a área de clique do checkbox para facilitar no celular */
         input[type="checkbox"] {
             transform: scale(1.5);
             margin-right: 10px;
+            accent-color: #2e4a28; /* Checkbox Verde */
         }
 
-        /* Estilo para os inputs numéricos (PVC, Lactato, etc) */
         input[type="number"] {
             padding: 8px;
             border: 1px solid #ccc;
@@ -80,9 +104,9 @@
         /* --- BOTÕES --- */
         button {
             display: inline-block;
-            width: 100%; /* Botões largura total no celular */
+            width: 100%;
             padding: 15px;
-            background-color: #007bff; /* Azul padrão */
+            background-color: #0056b3; /* Azul Ação Padrão */
             color: white;
             border: none;
             border-radius: 8px;
@@ -91,21 +115,31 @@
             font-weight: bold;
             margin-top: 15px;
             transition: background 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #004494;
         }
 
         button:active {
-            transform: scale(0.98); /* Efeito de clique */
+            transform: scale(0.98);
+        }
+
+        /* Botão Verde Militar para o Diagnóstico Inicial */
+        .btn-diagnostico {
+            background-color: #2e4a28 !important;
+        }
+        .btn-diagnostico:hover {
+            background-color: #1b3a1e !important;
         }
 
         /* Ajuste para telas maiores (PC) */
         @media (min-width: 600px) {
             button {
-                width: auto; /* Botões tamanho normal no PC */
+                width: auto;
                 margin-right: 10px;
+                padding: 12px 25px;
             }
         }
 
@@ -119,6 +153,8 @@
 <body>
 
     <header>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Coat_of_arms_of_the_Brazilian_Army.svg/200px-Coat_of_arms_of_the_Brazilian_Army.svg.png" alt="Brasão Exército Brasileiro" class="logo-militar">
+        <span class="instituicao">Hospital Geral de Salvador (HGeS)</span>
         <h1>Protocolo de Manejo do Choque</h1>
     </header>
 
@@ -138,7 +174,7 @@
                 <label>7. Hiperlactatemia (> 2.0 mmol/L)? <input type="checkbox" id="lactato"></label>
             </div>
             
-            <button onclick="avaliarCriterios()">Avaliar Diagnóstico</button>
+            <button onclick="avaliarCriterios()" class="btn-diagnostico">Avaliar Diagnóstico</button>
         </div>
 
         <div id="resultado" class="passo" style="display: none;"></div>
