@@ -1,6 +1,6 @@
 /**
  * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL, COMPLETA E FUNCIONAL)
- * Melhorias: Botões Limpos, Nomenclatura Científica Corrigida, Lista de Critérios de Melhora Inserida.
+ * Correção: Critérios para DPP/Oclusão incluídos na rota alternativa (PLR Impossível).
  */
 
 // =========================================================================
@@ -331,6 +331,8 @@ function avaliarVM(resposta) {
 // =========================================================================
 function avaliarAlternativas() {
     const container = document.getElementById('protocolo-container');
+    container.innerHTML = '';
+
     container.innerHTML = `
         <div id="passo-sem-plr" class="passo">
             <h2>4.1.3. Alternativas de Fluidorresponsividade</h2>
@@ -357,8 +359,15 @@ function avaliarAlternativaVM(resposta) {
                 <h2>4.1.3.2 Ação Alternativa (VM)</h2>
                 ${criteriosMelhoraHTML}
                 <p>✅ **Ação:** Como o PLR é impossível, a prioridade é o **DPP ou Oclusão Expiratória** (Manobra de Ventilação Mecânica).</p>
+                
+                <h3>Critérios Necessários:</h3>
+                <ul>
+                    <li>Sem arritmia?</li>
+                    <li>Sem interação no ventilador (respiração espontânea)?</li>
+                    <li>Volume Corrente (VT) 10-12ml/kg predito?</li>
+                </ul>
             
-                <p>O paciente atende aos critérios para DPP/Oclusão?</p>
+                <p>O paciente atende a **TODOS** estes critérios para DPP/Oclusão?</p>
                 <button onclick="aplicarPausa('sim')">Sim</button>
                 <button onclick="aplicarPausa('nao')">Não</button>
                 <hr>
