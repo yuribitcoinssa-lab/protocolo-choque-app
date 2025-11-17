@@ -18,19 +18,26 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-        h1, h2 {
-            color: #333;
-        }
+        h1, h2 { color: #333; }
+        h3 { color: #555; margin-top: 20px; }
         label {
-            display: inline-block;
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 10px;
             font-weight: bold;
-            width: 90%; 
+            width: 100%; 
+            max-width: 600px;
+            border-bottom: 1px solid #eee;
+            padding: 5px 0;
         }
         input[type="checkbox"] {
             margin-right: 5px;
-            float: right;
-            margin-top: 5px;
+            transform: scale(1.5);
+        }
+        input[type="number"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
         }
         button {
             padding: 10px 15px;
@@ -40,10 +47,13 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            margin-right: 5px;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
+        button:hover { background-color: #0056b3; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f9f9f9; }
     </style>
 </head>
 <body>
@@ -59,33 +69,19 @@
             <p>Selecione SIM ou NÃO para cada critério. O diagnóstico é dado pela combinação dos parâmetros.</p>
             
             <div id="criterios">
-                <label>1. Redução do Status Mental?</label>
-                <input type="checkbox" id="mentalStatus"><br>
-
-                <label>2. Alteração do Tempo de Enchimento Capilar (>= 4s)?</label>
-                <input type="checkbox" id="tec"><br>
-
-                <label>3. Redução do Débito Urinário?</label>
-                <input type="checkbox" id="diurese"><br>
-
-                <label>4. Shock Index (SI) > 0.8?</label>
-                <input type="checkbox" id="si"><br>
-
-                <label>5. Mottling?</label>
-                <input type="checkbox" id="mottling"><br>
-
-                <label>6. Hipotensão?</label>
-                <input type="checkbox" id="hipotensao"><br>
-
-                <label>7. Hiperlactatemia (> 2.0 mmol/L)?</label>
-                <input type="checkbox" id="lactato"><br>
+                <label>1. Redução do Status Mental? <input type="checkbox" id="mentalStatus"></label>
+                <label>2. Alteração do Tempo de Enchimento Capilar (>= 4s)? <input type="checkbox" id="tec"></label>
+                <label>3. Redução do Débito Urinário? <input type="checkbox" id="diurese"></label>
+                <label>4. Shock Index (SI) > 0.8? <input type="checkbox" id="si"></label>
+                <label>5. Mottling? <input type="checkbox" id="mottling"></label>
+                <label>6. Hipotensão? <input type="checkbox" id="hipotensao"></label>
+                <label>7. Hiperlactatemia (> 2.0 mmol/L)? <input type="checkbox" id="lactato"></label>
             </div>
             
             <button onclick="avaliarCriterios()">Avaliar Diagnóstico</button>
         </div>
 
-        <div id="resultado" class="passo" style="display: none;">
-            </div>
+        <div id="resultado" class="passo" style="display: none;"></div>
 
     </div>
 
