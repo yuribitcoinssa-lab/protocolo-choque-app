@@ -1,6 +1,6 @@
 /**
- * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL E FUNCIONAL)
- * CORREÇÃO FINAL: Sintaxe dos botões "Voltar" verificada e garantida.
+ * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL COM METAS CLÍNICAS)
+ * Adicionado: Tela de Metas Hemodinâmicas e Botões "Voltar" corrigidos.
  */
 
 // =========================================================================
@@ -26,6 +26,8 @@ const criteriosMelhoraHTML = `
 const backButtonHTML = (targetFunction) => 
     `<button onclick="${targetFunction}" style="background-color: #6c757d; margin-right: 10px;">⬅️ Voltar</button>`;
 
+const metasButtonHTML = (targetFunction) => 
+    `<button onclick="${targetFunction}" style="background-color: #00a000; margin-right: 10px;">Metas Hemodinâmicas</button>`;
 
 // =========================================================================
 // FUNÇÕES DE FLUXO ANTERIOR (VOLTAR) - OTIMIZADAS PARA RE-INJEÇÃO
@@ -34,6 +36,76 @@ const backButtonHTML = (targetFunction) =>
 // Função para recarregar a tela de diagnóstico inicial (único caso de reload)
 function voltarParaPasso1() {
     window.location.reload(); 
+}
+
+// =========================================================================
+// FUNÇÃO PARA A NOVA TELA DE METAS CLÍNICAS
+// =========================================================================
+
+function exibirMetasHemodinamicas() {
+    const container = document.getElementById('protocolo-container');
+    container.innerHTML = `
+        <div id="metas-finais" class="passo">
+            <h2>🎯 Metas Hemodinâmicas e Monitorização</h2>
+            [cite_start]<p>Guia para a manutenção do suporte hemodinâmico e objetivos de reversão do choque, baseado no Guideline ICM 2025[cite: 1, 4].</p>
+            <hr>
+
+            <h3>1. Metas de Pressão Arterial Média (PAM)</h3>
+            <ul style="padding-left: 20px;">
+                [cite_start]<li>**Choque Séptico:** Meta inicial de **65–70 mmHg**[cite: 663]. [cite_start]Individualizar em pacientes com hipertensão crônica ou PVC alta[cite: 665, 666].</li>
+                [cite_start]<li>**Choque Cardiogênico:** Considerar alvo inicial de **≥ 65 mmHg**[cite: 678].</li>
+                [cite_start]<li>**Choque Hemorrágico (não controlado e sem TBI):** Metas baixas (PAM **50–60 mmHg** ou PAS 80–90 mmHg) até o controle da hemorragia[cite: 676].</li>
+            </ul>
+
+            <h3>2. Metas e Parâmetros de Perfusão/Metabolismo</h3>
+            <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 15px;">
+                <thead>
+                    <tr style="background-color: #f0f0f0;">
+                        <th style="padding: 8px; border: 1px solid #ddd;">Parâmetro</th>
+                        <th style="padding: 8px; border: 1px solid #ddd;">Meta / Alvo</th>
+                        <th style="padding: 8px; border: 1px solid #ddd;">Referência</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Lactato</td>
+                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**< 2.0 mmol/L** (LSU)[cite: 137, 183]. [cite_start]A normalização é a consequência do tratamento adequado[cite: 255].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Metabolismo</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Tempo de Enchimento Capilar (TEC)</td>
+                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**< 3 segundos** (Normal)[cite: 170]. [cite_start]Monitorização seriada é essencial[cite: 146].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Microcirculação</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">SvcO₂ (Sat. Venosa Central)</td>
+                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**65% a 75%** (Garantir balanço entre oferta/consumo)[cite: 224].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Oxigenação</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">GapCO₂ ($P_{v-a}CO_{2}$)</td>
+                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**≤ 6.0 mmHg** (Valores > 6.0 sugerem choque persistente/fluxo baixo)[cite: 235].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Fluxo (CO)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Débito Urinário</td>
+                        [cite_start]<td style="padding: 8px; border: 1px solid #ddd;">**≥ 0.5 mL/kg/h** (Indicador de perfusão renal)[cite: 130].</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Perfusão Orgânica</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3. Pistas Diagnósticas (Tipos de Choque)</h3>
+            <ul style="padding-left: 20px;">
+                [cite_start]<li>**Choque Distributivo (Séptico, inicial):** Frequentemente associado a **CO Alto** e Pressão de Pulso Preservada (vasodilatação)[cite: 162, 191].</li>
+                [cite_start]<li>**Choque Cardiogênico/Hipovolêmico:** Geralmente associado a **CO Baixo** e Pressão de Pulso Baixa (vasoconstrição compensatória)[cite: 162, 192].</li>
+            </ul>
+            
+            <hr>
+            ${backButtonHTML('window.history.back()')}
+            <button onclick="window.location.reload()">Reiniciar Protocolo</button>
+        </div>
+    `;
 }
 
 // =========================================================================
@@ -102,6 +174,7 @@ function avaliarCriterios() {
             <p>O paciente <strong>NÃO</strong> preenche os critérios para choque neste momento.</p>
             <p>Reavalie o paciente em 30 minutos ou se houver piora clínica.</p>
             ${backButtonHTML('voltarParaPasso1()')}
+            ${metasButtonHTML('exibirMetasHemodinamicas()')}
             <button onclick="window.location.reload()">Reiniciar Protocolo</button>
         `;
     }
@@ -179,6 +252,7 @@ function logicaPasso2_1_1(resposta) {
                 <h2>2.2.1.2 NÃO: Estabilidade</h2>
                 <p>✅ **Ação:** Internar em **Enfermaria** e reavaliar.</p>
                 ${backButtonHTML('logicaPasso2(\'sim\')')}
+                ${metasButtonHTML('exibirMetasHemodinamicas()')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo (Fim do fluxo agudo)</button>
             </div>
         `;
@@ -503,9 +577,8 @@ function logicaPasso4_2(resposta) {
     const container = document.getElementById('protocolo-container');
     container.innerHTML = ''; 
     
-    // Definição do target do botão Voltar
+    // Definição do target do botão Voltar: identifica de qual tela de preditores ele veio
     let backButtonTarget;
-    // O target será a função que gerou a tela anterior (seja PLR, DPP, ou alternativa)
     if (document.getElementById('passo4-1-3-1')) { 
         backButtonTarget = 'avaliarVM(\'nao\')'; // PLR Espontânea
     } else if (document.getElementById('passo4-1-3-2-PLR')) {
@@ -515,7 +588,7 @@ function logicaPasso4_2(resposta) {
     } else if (document.getElementById('passo4-1-3-2-fallback-final')) {
         backButtonTarget = 'aplicarPausa(\'nao\')'; // Falha DPP/Oclusão
     } else {
-        backButtonTarget = 'avaliarGapEsvco2()'; // Fallback mais seguro (volta para a tela de Sim/Não PLR)
+        backButtonTarget = 'avaliarGapEsvco2()'; // Fallback mais seguro
     }
 
     if (resposta === 'sim') {
@@ -708,6 +781,7 @@ function logicaPasso5(melhora) {
                 <hr>
                 <p>**Lembrete:** Se Pneumotórax ou Tamponamento, a intervenção deve ser imediata.</p>
                 ${backButtonHTML('logicaPasso4_3_1(\'sim\')')}
+                ${metasButtonHTML('exibirMetasHemodinamicas()')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo</button>
             </div>
         `;
@@ -719,6 +793,7 @@ function logicaPasso5(melhora) {
                 <p>❌ **Ação:** **Reconsidere os diagnósticos** e discuta imediatamente com o intensivista.</p>
                 <p>Verifique ativamente a presença de Pneumotórax ou Tamponamento.</p>
                 ${backButtonHTML('logicaPasso4_3_1(\'sim\')')}
+                ${metasButtonHTML('exibirMetasHemodinamicas()')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo</button>
             </div>
         `;
