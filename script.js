@@ -1,6 +1,5 @@
 /**
- * Lógica do Protocolo de Manejo do Choque (VERSÃO CORRIGIDA E FUNCIONAL)
- * Corrigido: Remoção da opção de PLR no cenário de Fallback DPP/Oclusão.
+ * Lógica do Protocolo de Manejo do Choque (VERSÃO FINAL COM BOTÃO VOLTAR)
  */
 
 // =========================================================================
@@ -21,6 +20,40 @@ const criteriosMelhoraHTML = `
         </ul>
     </div>
 `;
+
+// Função utilitária para gerar o botão Voltar
+const backButtonHTML = (targetFunction) => 
+    `<button onclick="${targetFunction}" style="background-color: #6c757d; margin-right: 10px;">⬅️ Voltar</button>`;
+
+
+// =========================================================================
+// FUNÇÕES DE FLUXO ANTERIOR (VOLTAR)
+// =========================================================================
+
+// Função para voltar à tela inicial (Passo 1)
+function voltarParaPasso1() {
+    window.location.reload(); 
+    // Recarregar a página é o método mais limpo para resetar o formulário inicial
+}
+
+// Função para voltar ao resultado do diagnóstico (para refazer a avaliação 2.2)
+function voltarParaResultadoDiagnostico() {
+    const container = document.getElementById('protocolo-container');
+    container.innerHTML = '';
+    // Recarrega o Passo 1 (o resultado do diagnóstico não é salvo, então reiniciamos)
+    window.location.reload(); 
+}
+
+// Função para voltar ao Passo 2.2 (Reavaliação Pós-Desafio)
+function voltarParaReavaliacao2_2() {
+    iniciarDesafioVolumico(true); // Chamando a função principal do passo 2.2
+}
+
+// Função para voltar ao Passo 2.2.1 (Acompanhamento por 6h)
+function voltarParaAcompanhamento2_2_1() {
+    logicaPasso2('sim', true);
+}
+
 
 // =========================================================================
 // FUNÇÃO PRINCIPAL: AVALIAÇÃO DO CHOQUE (ITEM 1)
@@ -81,6 +114,7 @@ function avaliarCriterios() {
             <hr>
             <h3>2.1 Ação Imediata (Desafio Volêmico):</h3>
             <p><strong>Infunda 30ml/kg em 30-60 min e reavalie os critérios do Item 1.</strong></p>
+            ${backButtonHTML('voltarParaPasso1()')}
             <button onclick="iniciarDesafioVolumico()">Avançar para Etapa 2.2 (Reavaliação)</button>
         `;
     } else {
@@ -88,6 +122,7 @@ function avaliarCriterios() {
             <h2>❌ CHOQUE EXCLUÍDO</h2>
             <p>O paciente <strong>NÃO</strong> preenche os critérios para choque neste momento.</p>
             <p>Reavalie o paciente em 30 minutos ou se houver piora clínica.</p>
+            ${backButtonHTML('voltarParaPasso1()')}
             <button onclick="window.location.reload()">Reiniciar Protocolo</button>
         `;
     }
@@ -98,9 +133,9 @@ function avaliarCriterios() {
 // =========================================================================
 
 function iniciarDesafioVolumico() {
+    const container = document.getElementById('protocolo-container');
     document.getElementById('resultado').style.display = 'none';
 
-    const container = document.getElementById('protocolo-container');
     container.innerHTML = `
         <div id="passo2-reavaliacao" class="passo">
             <h2>2.2 Reavaliação Pós-Desafio Volêmico</h2>
@@ -108,6 +143,7 @@ function iniciarDesafioVolumico() {
             <p>O desafio volêmico de 30ml/kg foi concluído.</p>
             <p>Houve <strong>Melhora</strong> de algum parâmetro de perfusão/hemodinâmico (Item 1)?</p>
             
+            ${backButtonHTML('voltarParaPasso1()')} 
             <button onclick="logicaPasso2('sim')">Sim</button>
             <button onclick="logicaPasso2('nao')">Não</button>
         </div>
@@ -127,6 +163,7 @@ function logicaPasso2(resposta) {
                 <p>✅ **Ação:** Proceder internamento. Acompanhar por 6 horas para definir local de internação (UTI ou Enfermaria).</p>
                 <hr>
                 <p>O paciente voltou a piorar dentro das 6h?</p>
+                ${backButtonHTML('iniciarDesafioVolumico()')}
                 <button onclick="logicaPasso2_1_1('sim')">Sim</button>
                 <button onclick="logicaPasso2_1_1('nao')">Não</button>
                 
@@ -137,7 +174,7 @@ function logicaPasso2(resposta) {
         `;
     } else {
         // 2.2.2 Não: UTI + Monitorização (Salto para o item 3 e 2.2.2)
-        logicaPasso3_4(); 
+        logicaPasso3_4(true); // Adiciona 'true' para indicar que veio de uma falha (Back button customizado)
     }
 }
 
@@ -152,6 +189,7 @@ function logicaPasso2_1_1(resposta) {
                 <h2>2.2.1.1 SIM: Piora</h2>
                 ${criteriosMelhoraHTML}
                 <p>🚨 **Ação:** Considere Desafio Volêmico (500 ml em 5 a 10 min) e **Internação em UTI.**</p>
+                ${backButtonHTML('logicaPasso2(\'sim\')')}
                 <button onclick="logicaPasso3_4()">Avançar para Monitorização Avançada</button>
             </div>
         `;
@@ -161,15 +199,24 @@ function logicaPasso2_1_1(resposta) {
             <div id="passo2-1-2" class="passo">
                 <h2>2.2.1.2 NÃO: Estabilidade</h2>
                 <p>✅ **Ação:** Internar em **Enfermaria** e reavaliar.</p>
+                ${backButtonHTML('logicaPasso2(\'sim\')')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo (Fim do fluxo agudo)</button>
             </div>
         `;
     }
 }
 
-function logicaPasso3_4() {
-    // Corresponde aos Itens 2.2.2 e 3 (UTI + Monitorização + Gasometria)
+// =========================================================================
+// FUNÇÃO PARA O PASSO 3 E 4 (Monitorização e Cálculos)
+// Adicionada lógica para back button
+// =========================================================================
+function logicaPasso3_4(veioDeNao) {
     const container = document.getElementById('protocolo-container');
+    container.innerHTML = '';
+
+    // Define o target do botão Voltar: se veio de uma falha (veioDeNao=true), volta para o 2.2 (Reavaliação).
+    const targetBack = veioDeNao ? 'iniciarDesafioVolumico()' : 'logicaPasso2(\'sim\')';
+
     container.innerHTML = `
         <div id="passo3-e-4" class="passo">
             <h2>3. Monitorização Hemodinâmica e Coleta</h2>
@@ -200,6 +247,7 @@ function logicaPasso3_4() {
             <label for="pvc">PVC (Pressão Venosa Central):</label>
             <input type="number" id="pvc" placeholder="Ex: 8"> mmHg<br>
 
+            ${backButtonHTML(targetBack)}
             <button onclick="avaliarGapEsvco2()">Calcular e Avaliar Hipoperfusão (Item 4.1)</button>
         </div>
     `;
@@ -250,6 +298,7 @@ function avaliarGapEsvco2() {
                 <h3>4.1.3 Avaliação de Fluidorresponsividade</h3>
                 <p>O paciente pode fazer Elevação Passiva das Pernas (PLR)?</p>
                 
+                ${backButtonHTML('logicaPasso3_4(false)')}
                 <button onclick="avaliarPreditores('plr')">Sim</button>
                 <button onclick="avaliarPreditores('sem_plr')">Não</button>
             </div>
@@ -261,6 +310,7 @@ function avaliarGapEsvco2() {
                 <h2>4.1.1 Choque Revertido/Não Persistente</h2>
                 <p>✅ **Resultados:** GapCO2: ${gapCO2.toFixed(1)} mmHg | SvcO2: ${svco2.toFixed(1)}% | Razão (GapCO2 / $\Delta$CaO2-CvO2): ${razaoRespiratoria.toFixed(2)}</p>
                 <p>Os parâmetros de hipoperfusão estão controlados.</p>
+                ${backButtonHTML('logicaPasso3_4(false)')}
                 <button onclick="logicaPasso5('sim')">Avançar para Causa Base</button>
             </div>
         `;
@@ -283,6 +333,7 @@ function avaliarPreditores(tipo) {
                 <h3>Situação do Paciente:</h3>
                 
                 <p>O paciente está em **Ventilação Mecânica Invasiva**?</p>
+                ${backButtonHTML('avaliarGapEsvco2()')}
                 <button onclick="avaliarVM('sim')">Sim</button>
                 <button onclick="avaliarVM('nao')">Não</button>
             </div>
@@ -307,6 +358,7 @@ function avaliarVM(resposta) {
                 <h2>4.1.3.2 VM Invasiva</h2>
                 ${criteriosMelhoraHTML}
                 <p>Selecione a técnica de avaliação:</p>
+                ${backButtonHTML('avaliarPreditores(\'plr\')')}
                 <button onclick="avaliarPausaDPP('sim')">DPP / Oclusão Expiratória</button>
                 <button onclick="avaliarPausaDPP('nao')">Elevação Passiva das Pernas (PLR)</button>
             </div>
@@ -319,6 +371,7 @@ function avaliarVM(resposta) {
                 ${criteriosMelhoraHTML}
                 <p>✅ **Ação:** Realizar **Elevação Passiva das Pernas (PLR)**.</p>
                 <p>O PLR foi **positivo** (melhora dos parâmetros clínicos E/OU aumento > 5% de DC com ECOTT ou 10-15% com monitores)?</p>
+                ${backButtonHTML('avaliarPreditores(\'plr\')')}
                 <button onclick="logicaPasso4_2('sim')">Sim</button>
                 <button onclick="logicaPasso4_2('nao')">Não</button>
             </div>
@@ -331,12 +384,15 @@ function avaliarVM(resposta) {
 // =========================================================================
 function avaliarAlternativas() {
     const container = document.getElementById('protocolo-container');
+    container.innerHTML = '';
+
     container.innerHTML = `
         <div id="passo-sem-plr" class="passo">
             <h2>4.1.3. Alternativas de Fluidorresponsividade</h2>
             <p>O paciente não pode fazer Elevação Passiva das Pernas (PLR). Avalie a ventilação para a próxima ação:</p>
             
             <p>O paciente está em **Ventilação Mecânica Invasiva**?</p>
+            ${backButtonHTML('avaliarGapEsvco2()')}
             <button onclick="avaliarAlternativaVM('sim')">Sim</button>
             <button onclick="avaliarAlternativaVM('nao')">Não</button>
         </div>
@@ -366,6 +422,7 @@ function avaliarAlternativaVM(resposta) {
                 </ul>
             
                 <p>O paciente atende a **TODOS** estes critérios para DPP/Oclusão?</p>
+                ${backButtonHTML('avaliarAlternativas()')}
                 <button onclick="aplicarPausa('sim')">Sim</button>
                 <button onclick="aplicarPausa('nao')">Não</button>
                 <hr>
@@ -380,6 +437,7 @@ function avaliarAlternativaVM(resposta) {
                 <h2>4.1.3.1 Ação Alternativa (Espontânea)</h2>
                 <p>❌ **Ação:** O paciente não tem técnica dinâmica de fluidorresponsividade segura aplicável. **Proceder com Terapia Empírica:**</p>
                 <p>Inicie **Vasopressor** (Noradrenalina) OU Vasopressor + **Inotrópico** (Dobutamina).</p>
+                ${backButtonHTML('avaliarAlternativas()')}
                 <button onclick="reavaliar30Min()">Próxima Ação</button>
             </div>
         `;
@@ -392,6 +450,7 @@ function avaliarAlternativaVM(resposta) {
 function avaliarPausaDPP(resposta) {
     const container = document.getElementById('protocolo-container');
     container.innerHTML = '';
+    const targetBack = 'avaliarVM(\'sim\')'; // Volta para a escolha da técnica em VM
 
     if (resposta === 'sim') {
         // Avaliação para DPP/Oclusão Expiratória (Critérios Exigidos)
@@ -405,6 +464,7 @@ function avaliarPausaDPP(resposta) {
                     <li>Sem interação no ventilador (respiração espontânea)?</li>
                     <li>Volume Corrente (VT) 10-12ml/kg predito?</li>
                 </ul>
+                ${backButtonHTML(targetBack)}
                 <button onclick="aplicarPausa('sim')">Sim</button>
                 <button onclick="aplicarPausa('nao')">Não</button>
             </div>
@@ -417,6 +477,7 @@ function avaliarPausaDPP(resposta) {
                 ${criteriosMelhoraHTML}
                 <p>✅ **Ação:** Realizar **Elevação Passiva das Pernas (PLR)**.</p>
                 <p>O PLR foi **positivo** (melhora dos parâmetros clínicos E/OU aumento > 5% de DC com ECOTT ou 10-15% com monitores)?</p>
+                ${backButtonHTML(targetBack)}
                 <button onclick="logicaPasso4_2('sim')">Sim</button>
                 <button onclick="logicaPasso4_2('nao')">Não</button>
             </div>
@@ -436,6 +497,7 @@ function aplicarPausa(resposta) {
                 ${criteriosMelhoraHTML}
                 <p>✅ **Ação:** Realizar **DPP ou Oclusão Expiratória** (15s de pausa expiratória manual).</p>
                 <p>O preditor foi **positivo** (melhora dos parâmetros clínicos E/OU aumento > 5% de DC com ECOTT ou 10-15% com monitores)?</p>
+                ${backButtonHTML('avaliarPausaDPP(\'sim\')')}
                 <button onclick="logicaPasso4_2('sim')">Sim</button>
                 <button onclick="logicaPasso4_2('nao')">Não</button>
             </div>
@@ -447,6 +509,7 @@ function aplicarPausa(resposta) {
                 <h2>4.1.3.2 Fallback (Critérios Não Atendidos)</h2>
                 <p>❌ **Ação:** Como os critérios dinâmicos falharam ou são impossíveis, inicie **Terapia Empírica/Monitoramento Avançado**.</p>
                 <p>Inicie **Vasopressor** (Noradrenalina) OU Vasopressor + **Inotrópico** (Dobutamina).</p>
+                ${backButtonHTML('avaliarPausaDPP(\'sim\')')}
                 <button onclick="reavaliar30Min()">Reavaliar em 30 min (Item 4.3)</button>
             </div>
         `;
@@ -461,6 +524,21 @@ function aplicarPausa(resposta) {
 function logicaPasso4_2(resposta) {
     const container = document.getElementById('protocolo-container');
     container.innerHTML = ''; 
+    const targetBackSim = 'aplicarPausa(\'sim\')'; // Assume-se que o usuário veio do sucesso de uma manobra
+    const targetBackNao = 'aplicarPausa(\'nao\')'; // Assume-se que o usuário veio da falha de uma manobra
+    const targetBackPLR = 'avaliarVM(\'nao\')'; // Se veio de PLR em espontânea
+
+    // Definição do botão Voltar (simplificada)
+    let backButtonTarget;
+    if (document.getElementById('passo4-1-3-1')) { // Se o passo anterior foi PLR em espontânea
+        backButtonTarget = targetBackPLR;
+    } else if (document.getElementById('passo4-1-3-2-PLR')) { // Se o passo anterior foi PLR em VM
+        backButtonTarget = 'avaliarPausaDPP(\'nao\')';
+    } else if (document.getElementById('passo4-1-3-2-exec')) { // Se veio do sucesso DPP/Oclusão
+        backButtonTarget = 'aplicarPausa(\'sim\')';
+    } else {
+        backButtonTarget = 'avaliarPreditores(\'plr\')'; // Fallback mais seguro
+    }
 
     if (resposta === 'sim') {
         // 4.2.1 Sim: Fazer expansão volêmica (500 ml de cristalóide em 5-10 min)
@@ -472,6 +550,7 @@ function logicaPasso4_2(resposta) {
                 <hr>
                 <p style="font-weight: bold;">⚠️ OBS. CRISTALÓIDE:</p>
                 <p>O paciente é **neurocrítico**?</p>
+                ${backButtonHTML(backButtonTarget)}
                 <button onclick="logicaPasso4_2_neuro('sim')">Sim</button>
                 <button onclick="logicaPasso4_2_neuro('nao')">Não</button>
             </div>
@@ -482,6 +561,7 @@ function logicaPasso4_2(resposta) {
             <div id="passo4-2-2" class="passo">
                 <h2>4.2.2 Preditor NEGATIVO (Não Fluidorresponsivo)</h2>
                 <p>❌ **Ação:** Iniciar **Vasopressor** (Noradrenalina) OU Vasopressor + **Inotrópico** (Dobutamina).</p>
+                ${backButtonHTML(backButtonTarget)}
                 <button onclick="reavaliar30Min()">Próxima Ação</button>
             </div>
         `;
@@ -499,6 +579,7 @@ function logicaPasso4_2_neuro(resposta) {
             <h2>4.2.1 Fluidos Definidos</h2>
             ${criteriosMelhoraHTML}
             <p>✅ **Ação:** Fazer expansão volêmica com **${cristalóide}** (500 ml em 5-10 min).</p>
+            ${backButtonHTML('logicaPasso4_2(\'sim\')')}
             <button onclick="reavaliar30Min()">Próxima Ação</button>
         </div>
     `;
@@ -516,6 +597,7 @@ function reavaliar30Min() {
             ${criteriosMelhoraHTML}
             <p>Após a intervenção (expansão volêmica ou vasopressor/inotrópico), reavalie os parâmetros perfusionais/hemodinâmicos.</p>
             <p>Houve melhora?</p>
+            ${backButtonHTML('logicaPasso4_2(\'sim\')')}
             <button onclick="logicaPasso4_3_1('sim')">Sim</button>
             <button onclick="logicaPasso4_3_1('nao')">Não</button>
         </div>
@@ -535,6 +617,7 @@ function logicaPasso4_3_1(resposta) {
             <div id="passo4-3-1-2" class="passo">
                 <h2>4.3.1.2 Falha na Resposta Inicial</h2>
                 <p>❌ **Ação:** Não houve melhora. Tem monitor de Débito Cardíaco (DC)? (Termodiluição ou CAP - Swan-Ganz)</p>
+                ${backButtonHTML('reavaliar30Min()')}
                 <button onclick="logicaPasso4_3_1_2_1('sim')">Sim</button>
                 <button onclick="logicaPasso4_3_1_2_1('nao')">Não</button>
             </div>
@@ -553,6 +636,7 @@ function logicaPasso4_3_1_2_1(resposta) {
                 <h2>4.3.1.2.1 Monitor DC (Termodiluição/PAC)</h2>
                 <p>✅ **Ação:** Iniciar monitorização de DC (DC, PAP, PCP, PVC, RVS, EVLW).</p>
                 <p>⚠️ **Conduta:** Discuta individualmente com o intensivista cada ponto para nova intervenção (Busca de causa, ajustes finos de vasopressor/inotrópico).</p>
+                ${backButtonHTML('logicaPasso4_3_1(\'nao\')')}
                 <button onclick="logicaPasso5('nao')">Avançar para Reavaliação e Causa Base</button>
             </div>
         `;
@@ -562,6 +646,7 @@ function logicaPasso4_3_1_2_1(resposta) {
             <div id="passo4-3-1-2-2" class="passo">
                 <h2>4.3.1.2.2 Sem Monitor DC</h2>
                 <p>Tem **ECOTT** disponível?</p>
+                ${backButtonHTML('logicaPasso4_3_1(\'nao\')')}
                 <button onclick="logicaPasso4_3_1_2_2_1('sim')">Sim</button>
                 <button onclick="logicaPasso4_3_1_2_2_1('nao')">Não</button>
             </div>
@@ -582,7 +667,7 @@ function logicaPasso4_3_1_2_2_1(resposta) {
                 <p>✅ **Ação:** Avalie VTI, função sistólica e diastólica de VE, e sistólica do VD (TAPSE) + Linhas B pulmonares + VCI.</p>
                 <hr>
                 <p>Selecione o achado principal:</p>
-
+                ${backButtonHTML('logicaPasso4_3_1_2_1(\'nao\')')}
                 <button onclick="ecottConduta('disfuncao')">Disfunção Sistólica de Câmaras</button>
                 <button onclick="ecottConduta('normal_congestionado')">Função Normal + VCI ≥ 2.0 OU Padrão B Pulmonar</button>
                 <button onclick="ecottConduta('normal_hipovolemico')">Função Normal + VCI < 2.0 cm E Padrão A Pulmonar</button>
@@ -594,6 +679,7 @@ function logicaPasso4_3_1_2_2_1(resposta) {
             <div id="passo4-3-1-2-2-2-semecott" class="passo">
                 <h2>4.3.1.2.2.2 Sem ECOTT</h2>
                 <p>❌ **Ação:** Fazer novo **desafio volêmico** (250 ml de cristaloide) **E** aumentar vasopressor **E/OU** associar **Vasopressina**.</p>
+                ${backButtonHTML('logicaPasso4_3_1_2_1(\'nao\')')}
                 <button onclick="logicaPasso5('nao')">Avançar para Reavaliação e Causa Base</button>
             </div>
         `;
@@ -617,6 +703,7 @@ function ecottConduta(conduta) {
         <div id="passo4-3-1-2-2-1-conduta" class="passo">
             <h2>Conduta Baseada no ECOTT</h2>
             <p>🚨 **Ação:** ${acao}</p>
+            ${backButtonHTML('logicaPasso4_3_1_2_2_1(\'sim\')')}
             <button onclick="logicaPasso5('nao')">Avançar para Reavaliação e Causa Base</button>
         </div>
     `;
@@ -638,6 +725,7 @@ function logicaPasso5(melhora) {
                 <p>Considere descalonar as medidas somente após **6-12h**.</p>
                 <hr>
                 <p>**Lembrete:** Se Pneumotórax ou Tamponamento, a intervenção deve ser imediata.</p>
+                ${backButtonHTML('logicaPasso4_3_1(\'sim\')')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo</button>
             </div>
         `;
@@ -648,6 +736,7 @@ function logicaPasso5(melhora) {
                 <h2>5.2 Ausência de Melhora</h2>
                 <p>❌ **Ação:** **Reconsidere os diagnósticos** e discuta imediatamente com o intensivista.</p>
                 <p>Verifique ativamente a presença de Pneumotórax ou Tamponamento.</p>
+                ${backButtonHTML('logicaPasso4_3_1(\'sim\')')}
                 <button onclick="window.location.reload()">Reiniciar Protocolo</button>
             </div>
         `;
